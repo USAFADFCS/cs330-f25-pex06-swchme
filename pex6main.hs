@@ -27,10 +27,10 @@ unKnot tripCode
    | typeOneMoveExistsHere (wrapThis tripCode) = unKnot (makeTypeOneMoveHere (wrapThis tripCode))
 
    -- Type ii without wrap 
-   | typeTwoMoveExistsHere tripCode = unKnot (makeTypeTwoMoveInThisTripCode tripCode)
+   | typeTwoMoveExistsHere tripCode = unKnot (makeTypeTwoMoveHere  tripCode)
 
    -- Type ii with a wrap 
-   | typeTwoMoveExistsHere (wrapThis tripCode) = unKnot (makeTypeTwoMoveInThisTripCode (wrapThis tripCode))
+   | typeTwoMoveExistsHere (wrapThis tripCode) = unKnot (makeTypeTwoMoveHere  (wrapThis tripCode))
 
    -- no moves left
    | otherwise =
@@ -110,8 +110,8 @@ secondTypeTwoPair a b firstType ((x1,t1):(x2,t2):rest)
 
 --executing the type 2 cross using th ehelepr 
 
-makeTypeTwoMoveInThisTripCode :: [(Char, Char)] -> [(Char, Char)]
-makeTypeTwoMoveInThisTripCode trip = makeTypeTwoMove trip
+makeTypeTwoMoveHere :: [(Char, Char)] -> [(Char, Char)]
+makeTypeTwoMoveHere trip = makeTypeTwoMove trip
 
 makeTypeTwoMove :: [(Char, Char)] -> [(Char, Char)]
 makeTypeTwoMove [] = []
