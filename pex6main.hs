@@ -21,16 +21,16 @@ unKnot tripCode
    | null tripCode = "not a knot"
 
    -- Type i where there is no wrap 
-   | typeOneMoveExistsInThisTripCode tripCode = unKnot (makeTypeOneMoveInThisTripCode tripCode)
+   | typeOneMoveExistsHere tripCode = unKnot (makeTypeOneMoveHere tripCode)
 
    -- type i with a wrap 
-   | typeOneMoveExistsInThisTripCode (wrapThisTripCode tripCode) = unKnot (makeTypeOneMoveInThisTripCode (wrapThisTripCode tripCode))
+   | typeOneMoveExistsHere (wrapThis tripCode) = unKnot (makeTypeOneMoveHere (wrapThis tripCode))
 
    -- Type ii without wrap 
-   | typeTwoMoveExistsInThisTripCode tripCode = unKnot (makeTypeTwoMoveInThisTripCode tripCode)
+   | typeTwoMoveExistsHere tripCode = unKnot (makeTypeTwoMoveInThisTripCode tripCode)
 
    -- Type ii with a wrap 
-   | typeTwoMoveExistsInThisTripCode (wrapThisTripCode tripCode) = unKnot (makeTypeTwoMoveInThisTripCode (wrapThisTripCode tripCode))
+   | typeTwoMoveExistsHere (wrapThis tripCode) = unKnot (makeTypeTwoMoveInThisTripCode (wrapThis tripCode))
 
    -- no moves left
    | otherwise =
@@ -40,8 +40,8 @@ unKnot tripCode
 --implimenting the wrapping 
 --
 
-wrapThisTripCode :: [(Char, Char)] -> [(Char, Char)]
-wrapThisTripCode trip = wrap trip
+wrapThis :: [(Char, Char)] -> [(Char, Char)]
+wrapThis trip = wrap trip
 
 -- moving the first pair to the end of the list
 
@@ -52,8 +52,8 @@ wrap (first:rest) = rest ++ [first] -- move first elemnt to the end
 
 --detection of a type I crosss
 
-typeOneMoveExistsInThisTripCode :: [(Char, Char)] -> Bool
-typeOneMoveExistsInThisTripCode trip = typeOneMoveExists trip
+typeOneMoveExistsHere :: [(Char, Char)] -> Bool
+typeOneMoveExistsHere trip = typeOneMoveExists trip
 
 --sees if there are any pair of crossings that are right 
 -- near each other with the same cross name 
@@ -69,8 +69,8 @@ typeOneMoveExists ((c1,t1):(c2,t2):others)
 
 
 --executing the type I cross 
-makeTypeOneMoveInThisTripCode :: [(Char, Char)] -> [(Char, Char)]
-makeTypeOneMoveInThisTripCode trip = makeTypeOneMove trip
+makeTypeOneMoveHere :: [(Char, Char)] -> [(Char, Char)]
+makeTypeOneMoveHere trip = makeTypeOneMove trip
 
 
 --will rmeove the pair of crossings that have the same name 
@@ -86,26 +86,26 @@ makeTypeOneMove ((c1,t1):(c2,t2):others)
 
 --detection of a type two cross in the code but a idfferent tpye later in the cod e
 
-typeTwoMoveExistsInThisTripCode :: [(Char, Char)] -> Bool 
-typeTwoMoveExistsInThisTripCode trip =  typeTwoMoveExists trip
+typeTwoMoveExistsHere :: [(Char, Char)] -> Bool 
+typeTwoMoveExistsHere trip =  typeTwoMoveExists trip
 
 --
 typeTwoMoveExists :: [(Char, Char)] -> Bool
 typeTwoMoveExists [] = False
 typeTwoMoveExists [x] = False
 typeTwoMoveExists ((c1,t1):(c2,t2):others)
-   | t1 == t2 && secondTypeTwoPairExists c1 c2 t1 others = True
+   | t1 == t2 && secondTypeTwoPair c1 c2 t1 others = True
    | otherwise = typeTwoMoveExists ((c2,t2):others)
 
 
 -- creating helper 
 
-secondTypeTwoPairExists :: Char -> Char -> Char -> [(Char,Char)] -> Bool
-secondTypeTwoPairExists _ _ _ [] = False
-secondTypeTwoPairExists _ _ _ [x] = False
-secondTypeTwoPairExists a b firstType ((x1,t1):(x2,t2):rest)
+secondTypeTwoPair :: Char -> Char -> Char -> [(Char,Char)] -> Bool
+secondTypeTwoPair _ _ _ [] = False
+secondTypeTwoPair _ _ _ [x] = False
+secondTypeTwoPair a b firstType ((x1,t1):(x2,t2):rest)
    | t1 == t2 && firstType /= t1  && ((a == x1 && b == x2) || (a == x2 && b == x1)) = True
-   | otherwise = secondTypeTwoPairExists a b firstType ((x2,t2):rest)
+   | otherwise = secondTypeTwoPair a b firstType ((x2,t2):rest)
 
 
 --executing the type 2 cross using th ehelepr 
@@ -118,7 +118,7 @@ makeTypeTwoMove [] = []
 makeTypeTwoMove [x] = [x]
 makeTypeTwoMove ((c1,t1):(c2,t2):others)
 --drop the pair if it is found later as well 
-   | t1 == t2 && secondTypeTwoPairExists c1 c2 t1 others = removeSecondTypeTwoPair c1 c2 t1 others
+   | t1 == t2 && secondTypeTwoPair c1 c2 t1 others = removeSecondTypeTwoPair c1 c2 t1 others
    | otherwise = (c1,t1) : makeTypeTwoMove ((c2,t2):others)
 
 --will remove the second pair that matches the type ii pattern 
@@ -204,4 +204,5 @@ main = do
     print(t12)
     print("   result:" ++ unKnot t12) -- [('q','u')]
             
+
 
